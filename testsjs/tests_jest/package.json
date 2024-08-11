@@ -1,0 +1,19 @@
+{
+  "name": "testsjs",
+  "version": "1.0.0",
+  "main": "register.test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "js-cookie": "^3.0.5",
+    "test": "^3.3.0"
+  }
+}

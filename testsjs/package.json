@@ -1,0 +1,7 @@
+{
+    "scripts": {
+      "test:node": "node ./tests_nodejs --test",
+      "test:jest": "jest ./tests_jest",
+      "test:vitest": "vitest ./tests_vitest"
+    }
+}
