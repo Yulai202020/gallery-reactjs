@@ -18,7 +18,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* use
     return totalSize;
 }
 
-callback send_post_request(const std::string& url, const std::string& data, const std::string& method, bool is_cookie) {
+callback send_post_request(const std::string& url, const std::string& post_data, const std::string& cookie_data, const std::string& method, bool with_cookie) {
     CURL* curl;
     CURLcode res;
     std::string readBuffer;
@@ -32,10 +32,10 @@ callback send_post_request(const std::string& url, const std::string& data, cons
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         if (method == "post") {
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
         }
-        if (is_cookie) {
-            curl_easy_setopt(curl, CURLOPT_COOKIE, data.c_str());
+        if (with_cookie) {
+            curl_easy_setopt(curl, CURLOPT_COOKIE, cookie_data.c_str());
         }
 
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -75,7 +75,17 @@ callback send_post_request(const std::string& url, const std::string& data, cons
 int main() {
     callback rc;
 
-    rc = send_post_request("http://localhost:8000/api/login", "{\"username\":\"test\", \"password\":\"pass\"}", "post", false);
+    rc = send_post_request("http://localhost:8000/api/register", "{\"username\":\"test\", \"password\":\"pass\"}", "", "post", false);
+
+    if (rc.code == 200) {
+        std::cout << "PASS\n";
+        std::cout << "Response Body: " << rc.body.dump(4) << "\n";
+    } else {
+        std::cout << "ERR\n";
+        return 0;
+    }
+
+    rc = send_post_request("http://localhost:8000/api/login", "{\"username\":\"test\", \"password\":\"pass\"}", "", "post", false);
 
     if (rc.code == 200) {
         std::cout << "PASS\n";
@@ -87,7 +97,7 @@ int main() {
 
     std::string token = rc.body["token"];
 
-    rc = send_post_request("http://localhost:8000/api/images", "token="+token, "get", true);
+    rc = send_post_request("http://localhost:8000/api/images", "", "token="+token, "get", true);
 
     if (rc.code == 200) {
         std::cout << "PASS\n";

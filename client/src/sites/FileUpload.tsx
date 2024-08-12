@@ -54,45 +54,36 @@ const FileUpload: React.FC = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={onSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="formFile" className="form-label">Input image file</label>
-                    <input className="form-control" type="file" id="formFile" ref={fileInputRef} />
+        <div className="container d-flex align-items-center min-vh-100">
+            <div className="row justify-content-center w-100">
+                <div className="col-md-6 col-lg-8">
+                    <h3 className="text-center mb-4">Upload file</h3>
+                    <form onSubmit={onSubmit}>
+                        <div className="mb-3">
+                            <label htmlFor="formFile" className="form-label">Input image file</label>
+                            <input className="form-control" type="file" id="formFile" ref={fileInputRef} />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="alt">Alt</label>
+                            <input type="text" className="form-control" id="alt" placeholder="text" value={alt} onChange={(e) => setAlt(e.target.value)} />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="subject">Subject</label>
+                            <input type="text" className="form-control" id="subject" placeholder="text" value={subject} onChange={(e) => setSubject(e.target.value)} />
+                        </div>
+
+                        {label && (
+                            <div className="mb-3">
+                                <label style={{ color: 'red' }}>{label}</label>
+                            </div>
+                        )}
+
+                        <button type="submit" className="btn btn-primary">Upload</button>
+                    </form>
                 </div>
-
-                <div className="mb-3">
-                    <label htmlFor="alt">Alt</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="alt"
-                        placeholder="text"
-                        value={alt}
-                        onChange={(e) => setAlt(e.target.value)}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label htmlFor="subject">Subject</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="subject"
-                        placeholder="text"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                    />
-                </div>
-
-                {label && (
-                    <div className="mb-3">
-                        <label style={{ color: 'red' }}>{label}</label>
-                    </div>
-                )}
-
-                <button type="submit" className="btn btn-primary">Upload</button>
-            </form>
+            </div>
         </div>
     );
 };

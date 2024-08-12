@@ -15,7 +15,7 @@ function Index() {
 
     try {
       const response = await fetch(server_path + '/api/remove', {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
