@@ -71,19 +71,20 @@ function Index() {
       <div className="gallery">
         {BackendData.map((item, index) => (
           <div className="gallery-item" key={index}>
-            <img
-              src={`${server_path}/api/image/${item.id}`}
-              alt={item.alt}
-              className="figure-img img-fluid"
-            />
+            <img src={`${server_path}/api/image/${item.id}`} alt={item.alt} className="figure-img img-fluid" />
             <figcaption className="figure-caption">{item.subject}</figcaption>
             <button onClick={sendDelete} id={String(item.id)}>delete</button>
           </div>
         ))}
       </div>
-      <a href="/upload">Upload</a>
-      <br />
-      <a href="/logout">Logout</a>
+
+      <div className="mb-3">
+        <a href="/upload">Upload</a>
+      </div>
+
+      <div className="mb-3">
+        <a href="/logout">Logout</a>
+      </div>
     </>
   );
 }
