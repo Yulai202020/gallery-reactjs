@@ -80,7 +80,9 @@ const FileUpload: React.FC = () => {
                             </div>
                         )}
 
-                        <button type="submit" className="btn btn-primary">Upload</button>
+                        <div className="d-flex justify-content-center">
+                            <button type="submit" className="btn btn-primary col-md-4">Upload</button>
+                        </div>
                     </form>
                 </div>
             </div>

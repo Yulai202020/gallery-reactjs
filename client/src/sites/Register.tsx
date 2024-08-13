@@ -53,8 +53,9 @@ function Register() {
                                 <label style={{ color: 'red' }}>{label}</label>
                             </div>
                         )}
-
-                        <button type="submit" className="btn btn-primary w-100">Submit</button>
+                        <div className="d-flex justify-content-center">
+                            <button type="submit" className="btn btn-primary w-100">Submit</button>
+                        </div>
                     </form>
 
                     <div className="mt-3 text-center">

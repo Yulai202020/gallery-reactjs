@@ -18,7 +18,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* use
     return totalSize;
 }
 
-callback send_post_request(const std::string& url, const std::string& post_data, const std::string& cookie_data, const std::string& method, bool with_cookie) {
+callback send_post_request(const std::string& url, const std::string& post_data, const std::string& cookie_data) {
     CURL* curl;
     CURLcode res;
     std::string readBuffer;
@@ -31,10 +31,10 @@ callback send_post_request(const std::string& url, const std::string& post_data,
 
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        if (method == "post") {
+        if (post_data != "") {
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
         }
-        if (with_cookie) {
+        if (cookie_data != "") {
             curl_easy_setopt(curl, CURLOPT_COOKIE, cookie_data.c_str());
         }
 
@@ -75,7 +75,7 @@ callback send_post_request(const std::string& url, const std::string& post_data,
 int main() {
     callback rc;
 
-    rc = send_post_request("http://localhost:8000/api/register", "{\"username\":\"test\", \"password\":\"pass\"}", "", "post", false);
+    rc = send_post_request("http://localhost:8000/api/register", "{\"username\":\"test\", \"password\":\"pass\"}", "");
 
     if (rc.code == 200) {
         std::cout << "PASS\n";
@@ -85,7 +85,7 @@ int main() {
         return 0;
     }
 
-    rc = send_post_request("http://localhost:8000/api/login", "{\"username\":\"test\", \"password\":\"pass\"}", "", "post", false);
+    rc = send_post_request("http://localhost:8000/api/login", "{\"username\":\"test\", \"password\":\"pass\"}", "");
 
     if (rc.code == 200) {
         std::cout << "PASS\n";
@@ -97,7 +97,7 @@ int main() {
 
     std::string token = rc.body["token"];
 
-    rc = send_post_request("http://localhost:8000/api/images", "", "token="+token, "get", true);
+    rc = send_post_request("http://localhost:8000/api/images", "", "token="+token);
 
     if (rc.code == 200) {
         std::cout << "PASS\n";
