@@ -7,6 +7,7 @@ var cors = require("cors")
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs");
+const sharp = require('sharp');
 
 // include prisma
 const { PrismaClient } = require("@prisma/client");
@@ -74,46 +75,37 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
         return res.status(404).send("No file uploaded.");
     }
 
-    const uploadPath = path.join(__dirname, photos_folder, username);
+    const supportedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!supportedMimeTypes.includes(req.file.mimetype)) {
+        return res.status(405).json({ message: "Unsupported file format." });
+    }
 
-    // Ensure the directory exists
+    const response = await prisma.images.create({ data: { alt: alt, subject: subject, username: username } });
+    console.log("Uploaded image:");
+    console.log(response.id);
+
+    const uploadPath = path.join(__dirname, photos_folder, username, String(response.id));
+
     fs.mkdirSync(uploadPath, { recursive: true });
 
-    // get time and make new filename
-    const filename = req.file.originalname;
-    const now = new Date();
+    const filePath = path.join(uploadPath, "file.webp");
 
-    const datePart = now.toISOString().split('T')[0]; // YYYY-MM-DD
-    const timePart = now.toTimeString().split(' ')[0] + '.' + now.getMilliseconds().toString().padStart(3, '0'); // HH:MM:SS.mmm
-
-    const timestamp = `${datePart}-${timePart}`;
-
-    const ext = path.extname(filename);
-    const basename = path.basename(filename, ext);
-
-    // Generate the new filename
-    const newFilename = `${basename}-${timestamp}${ext}`;
-
-    // filepath
-    const filePath = path.join(uploadPath, newFilename);
-
-    // if file exists
     if (fs.existsSync(filePath)) {
-        return res.status(402).json({ message: "File is already exists." })
+        return res.status(402).json({ message: "File already exists." });
     }
 
     try {
-        await fs.promises.writeFile(filePath, req.file.buffer);
+        await sharp(req.file.buffer)
+            .webp({ quality: 80 })
+            .toFile(filePath);
     } catch (err) {
+        console.error("Error converting the image to WebP:", err);
         return res.status(500).json({ message: "Error saving the file." });
     }
 
-    const response = await prisma.images.create({ data: { alt: alt, subject: subject, username: username, filename: newFilename } });
-    console.log("Uploaded image:")
-    console.log(response.id)
-
-    return res.status(200).json({ id: response.id, message: "OK" });
+    return res.status(200).json({ message: "OK" });
 });
+
 
 app.get("/api/image/:id", async (req, res) => {
     // get username
@@ -127,9 +119,12 @@ app.get("/api/image/:id", async (req, res) => {
         return res.status(403).json({ message: "Token is expired" });
     }
 
-    const response = await prisma.images.findFirst({ where: { id: id, username: username } })
+    const response = await prisma.images.findFirst({ where: { id: id, username: username } });
+    if (response === null) {
+        return res.status(404).send({ message: 'File not found' });
+    }
 
-    const filePath = path.join(__dirname, 'photos', username, response.filename);
+    const filePath = path.join(__dirname, 'photos', username, String(id), "file.webp");
     return res.status(200).sendFile(filePath, (err) => {
         if (err) {
             console.error('Error sending file:', err);

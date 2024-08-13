@@ -16,6 +16,5 @@ model Images {
   id Int @id @default(autoincrement())
   alt String
   subject String
-  filename String
   username String
 }
