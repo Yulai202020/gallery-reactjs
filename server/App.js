@@ -24,7 +24,7 @@ var encrypter = "ibutytuiu89r56tcyjhknklihg8fty"
 // init cors optoin
 var corsOptions = {
     origin: "http://localhost:3000",
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }
@@ -63,11 +63,11 @@ app.get("/api/removeall", async (req, res) => {
 app.post("/api/upload", upload.single("file"), async (req, res) => {
     const { subject, alt } = req.body;
     const token = req.cookies.token;
-    var username;
+    let username;
 
     try {
         username = jwt.verify(token, encrypter).username;
-    } catch {
+    } catch (error) {
         return res.status(403).json({ message: "Token is expired" });
     }
 
@@ -77,35 +77,39 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 
     const supportedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!supportedMimeTypes.includes(req.file.mimetype)) {
-        return res.status(405).json({ message: "Unsupported file format." });
+        return res.status(415).json({ message: "Unsupported file format." });
     }
 
-    const response = await prisma.images.create({ data: { alt: alt, subject: subject, username: username } });
-    console.log("Uploaded image:");
-    console.log(response.id);
+    let response;
+    try {
+        response = await prisma.images.create({ data: { alt: alt, subject: subject, username: username } });
+    } catch (err) {
+        console.error("Error saving metadata to the database:", err);
+        return res.status(500).json({ message: "Error saving metadata." });
+    }
 
     const uploadPath = path.join(__dirname, photos_folder, username, String(response.id));
-
     fs.mkdirSync(uploadPath, { recursive: true });
 
-    const filePath = path.join(uploadPath, "file.webp");
+    const originalFilePath = path.join(uploadPath, "original.webp");
+    const file800pxPath = path.join(uploadPath, "800w.webp");
+    const file400pxPath = path.join(uploadPath, "400w.webp");
 
-    if (fs.existsSync(filePath)) {
-        return res.status(402).json({ message: "File already exists." });
+    if (fs.existsSync(originalFilePath)) {
+        return res.status(409).json({ message: "File already exists." });
     }
 
     try {
-        await sharp(req.file.buffer)
-            .webp({ quality: 80 })
-            .toFile(filePath);
+        await sharp(req.file.buffer).webp({ quality: 80 }).toFile(originalFilePath);
+        await sharp(req.file.buffer).resize({ width: 800 }).webp({ quality: 80 }).toFile(file800pxPath);
+        await sharp(req.file.buffer).resize({ width: 400 }).webp({ quality: 80 }).toFile(file400pxPath);
     } catch (err) {
         console.error("Error converting the image to WebP:", err);
         return res.status(500).json({ message: "Error saving the file." });
     }
 
-    return res.status(200).json({ message: "OK" });
+    return res.status(200).json({ message: "OK", id: response.id });
 });
-
 
 app.get("/api/image/:id", async (req, res) => {
     // get username
@@ -124,7 +128,7 @@ app.get("/api/image/:id", async (req, res) => {
         return res.status(404).send({ message: 'File not found' });
     }
 
-    const filePath = path.join(__dirname, 'photos', username, String(id), "file.webp");
+    const filePath = path.join(__dirname, 'photos', username, String(id), "original.webp");
     return res.status(200).sendFile(filePath, (err) => {
         if (err) {
             console.error('Error sending file:', err);
