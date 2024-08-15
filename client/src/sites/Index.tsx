@@ -7,6 +7,7 @@ import React from 'react';
 
 function Index() {
   const [BackendData, setBackendData] = useState<any[]>([]);
+  const [Width, setWidth] = useState(0);
   const navigate = useNavigate();
   const server_path = localStorage.getItem('server_path');
 
@@ -57,6 +58,34 @@ function Index() {
     }
   };
 
+  const handleDownload = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const buttonId = event.currentTarget.id; // Type-safe access to the button ID
+    event.preventDefault(); // Prevent the default link behavior
+
+    const link = document.createElement('a');
+    const imageUrl = `${server_path}/api/image/${buttonId}/original`;
+
+    fetch(imageUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'your-image.jpg'; // Customize filename here
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => {
+        console.error('There was an error downloading the image:', error);
+      });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await sendData();
@@ -66,15 +95,41 @@ function Index() {
     fetchData();
   }, []); // Remove navigate from dependency array
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  var type: string;
+
+  if (Width < 600) {
+    type = "100";
+  } else if (Width > 600 && Width < 1000) {
+    type = "200";
+  } else {
+    type = "400";
+  }
+
   return (
     <>
       <div className="gallery">
         {BackendData.map((item, index) => (
           <div className="gallery-item" key={index}>
-            <img src={`${server_path}/api/image/${item.id}`} alt={item.alt} className="figure-img img-fluid" />
+            <a href={`${server_path}/api/image/${item.id}/download`}>
+              <img src={`${server_path}/api/image/${item.id}/${type}`} alt={item.alt} />
+            </a>
+
             <figcaption className="figure-caption">{item.subject}</figcaption>
             <button onClick={sendDelete} id={String(item.id)}>delete</button>
           </div>
+
         ))}
       </div>
 

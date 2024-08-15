@@ -91,30 +91,40 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     const uploadPath = path.join(__dirname, photos_folder, username, String(response.id));
     fs.mkdirSync(uploadPath, { recursive: true });
 
-    const originalFilePath = path.join(uploadPath, "original.webp");
-    const file800pxPath = path.join(uploadPath, "800w.webp");
-    const file400pxPath = path.join(uploadPath, "400w.webp");
+    const originalFilePath = path.join(uploadPath, "original");
+    const file800pxPath = path.join(uploadPath, "800w");
+    const file400pxPath = path.join(uploadPath, "400w");
+    const file200pxPath = path.join(uploadPath, "200w");
+    const file100pxPath = path.join(uploadPath, "100w");
+
+    res.status(200).json({ message: "OK", id: response.id });
 
     if (fs.existsSync(originalFilePath)) {
         return res.status(409).json({ message: "File already exists." });
     }
 
     try {
-        await sharp(req.file.buffer).webp({ quality: 80 }).toFile(originalFilePath);
-        await sharp(req.file.buffer).resize({ width: 800 }).webp({ quality: 80 }).toFile(file800pxPath);
-        await sharp(req.file.buffer).resize({ width: 400 }).webp({ quality: 80 }).toFile(file400pxPath);
+        await sharp(req.file.buffer).webp({ quality: 80 }).toFile(originalFilePath + ".webp");
+        await sharp(req.file.buffer).resize({ width: 800 }).webp({ quality: 80 }).toFile(file800pxPath + ".webp");
+        await sharp(req.file.buffer).resize({ width: 400 }).webp({ quality: 80 }).toFile(file400pxPath + ".webp");
+        await sharp(req.file.buffer).resize({ width: 200 }).webp({ quality: 80 }).toFile(file200pxPath + ".webp");
+        await sharp(req.file.buffer).resize({ width: 100 }).webp({ quality: 80 }).toFile(file100pxPath + ".webp");
+
+        await sharp(req.file.buffer).avif({ quality: 80 }).toFile(originalFilePath + ".avif");
+        await sharp(req.file.buffer).resize({ width: 800 }).avif({ quality: 80 }).toFile(file800pxPath + ".avif");
+        await sharp(req.file.buffer).resize({ width: 400 }).avif({ quality: 80 }).toFile(file400pxPath + ".avif");
+        await sharp(req.file.buffer).resize({ width: 200 }).avif({ quality: 80 }).toFile(file200pxPath + ".avif");
+        await sharp(req.file.buffer).resize({ width: 100 }).avif({ quality: 80 }).toFile(file100pxPath + ".avif");
     } catch (err) {
         console.error("Error converting the image to WebP:", err);
-        return res.status(500).json({ message: "Error saving the file." });
     }
-
-    return res.status(200).json({ message: "OK", id: response.id });
 });
 
-app.get("/api/image/:id", async (req, res) => {
+app.get("/api/image/:id/:type", async (req, res) => {
     // get username
     const token = req.cookies.token;
     const id = Number(req.params.id);
+    const type = req.params.type;
     var username;
     
     try {
@@ -128,7 +138,23 @@ app.get("/api/image/:id", async (req, res) => {
         return res.status(404).send({ message: 'File not found' });
     }
 
-    const filePath = path.join(__dirname, 'photos', username, String(id), "original.webp");
+    var type1;
+    if (type == "100") {
+        type1 = "100w.webp";
+    } else if (type == "200") {
+        type1 = "200w.webp";
+    }  else if (type == "400") {
+        type1 = "400w.webp";
+    }  else if (type == "800") {
+        type1 = "800w.webp";
+    } else if (type == "download") {
+        type1 = "original.webp";
+        res.set('Content-Disposition', 'attachment');
+    } else {
+        type1 = "original.webp";
+    }
+
+    const filePath = path.join(__dirname, 'photos', username, String(id), type1);
     return res.status(200).sendFile(filePath, (err) => {
         if (err) {
             console.error('Error sending file:', err);
@@ -191,9 +217,9 @@ app.post("/api/remove", async (req, res) => {
     console.log(response)
 
     if (response !== null) {
-        const deleteFile = path.join(photos_folder, username, response.filename);
-    
-        fs.unlink(deleteFile, (err) => {
+        const deleteFolder = path.join(__dirname, photos_folder, username, String(id));
+
+        fs.rm(deleteFolder, { recursive: true, force: true }, (err) => {
             if (err) {
                 console.error("Error deleting the file:", err);
                 return res.status(500).send({ message: "Error deleting the file" });
