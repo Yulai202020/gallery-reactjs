@@ -121,7 +121,7 @@ function Index() {
     <>
       <div className="gallery">
         {BackendData.map((item, index) => (
-          <div className="gallery-item" key={index}>
+          <div className="gallery-item">
             <a href={`${server_path}/api/image/${item.id}/download`}>
               <img src={`${server_path}/api/image/${item.id}/${type}`} alt={item.alt} />
             </a>
@@ -129,7 +129,6 @@ function Index() {
             <figcaption className="figure-caption">{item.subject}</figcaption>
             <button onClick={sendDelete} id={String(item.id)}>delete</button>
           </div>
-
         ))}
       </div>
 

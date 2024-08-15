@@ -13,7 +13,6 @@ body {
 }
 
 .gallery-item {
-    width: 300px; /* Fixed width for each item */
     box-sizing: border-box;
     overflow: hidden;
     position: relative;

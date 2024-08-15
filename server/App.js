@@ -139,6 +139,7 @@ app.get("/api/image/:id/:type", async (req, res) => {
     }
 
     var type1;
+    console.log(type)
     if (type == "100") {
         type1 = "100w.webp";
     } else if (type == "200") {
