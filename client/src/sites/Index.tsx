@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import Cookies from 'js-cookie';
+import React from 'react';
+
 import 'bootstrap/dist/css/bootstrap.css';
 import '../style.css';
-import React from 'react';
 
 function Index() {
   const [BackendData, setBackendData] = useState<any[]>([]);
@@ -58,34 +60,6 @@ function Index() {
     }
   };
 
-  const handleDownload = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const buttonId = event.currentTarget.id; // Type-safe access to the button ID
-    event.preventDefault(); // Prevent the default link behavior
-
-    const link = document.createElement('a');
-    const imageUrl = `${server_path}/api/image/${buttonId}/original`;
-
-    fetch(imageUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.blob();
-      })
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        link.href = url;
-        link.download = 'your-image.jpg'; // Customize filename here
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(error => {
-        console.error('There was an error downloading the image:', error);
-      });
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       const data = await sendData();
@@ -127,8 +101,8 @@ function Index() {
             </a>
 
             <figcaption className="figure-caption">{item.subject}</figcaption>
-            <button onClick={sendDelete} id={String(item.id)}>delete</button>
-          </div>
+            <button className="btn btn-primary" onClick={sendDelete} id={String(item.id)}>delete</button>
+          </div>  
         ))}
       </div>
 
