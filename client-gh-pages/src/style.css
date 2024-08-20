@@ -20,6 +20,7 @@ body {
 }
 
 .gallery-item img {
+  border-radius: 10px;
   width: 20%;
   height: auto;
   cursor: pointer;
