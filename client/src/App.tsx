@@ -11,9 +11,12 @@ import PageNotFound from "./sites/PageNotFound";
 import 'bootstrap/dist/css/bootstrap.css';
 import './style.css';
 
+import Favicon from "react-favicon";
+
 function App() {
     return (
       <BrowserRouter>
+        <Favicon url="/logo.svg"/>
         <Routes>
             <Route path="/" element={<PrivateRoute><Index/></PrivateRoute>}/>
             <Route path="/upload" element={<PrivateRoute><FileUpload/></PrivateRoute>}/>

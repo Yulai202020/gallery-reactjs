@@ -1,8 +1,12 @@
 import React, { useState, useRef, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import useTitle from './useTitle';
+import Navigate from './Navigate';
 
-const FileUpload: React.FC = () => {
+function FileUpload() {
+    useTitle("File upload");
+
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [subject, setSubject] = useState<string>("");
@@ -54,6 +58,8 @@ const FileUpload: React.FC = () => {
     };
 
     return (
+        <>
+        <Navigate />
         <div className="container d-flex align-items-center min-vh-100">
             <div className="row justify-content-center w-100">
                 <div className="col-md-6 col-lg-8">
@@ -87,6 +93,7 @@ const FileUpload: React.FC = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

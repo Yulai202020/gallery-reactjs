@@ -2,7 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 
+import useTitle from './useTitle';
+
 function Login() {
+    useTitle("Login");
+
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

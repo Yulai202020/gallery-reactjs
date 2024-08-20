@@ -1,0 +1,14 @@
+[
+    {
+        "href": "/",
+        "title": "Home"
+    },
+    {
+        "href": "/upload",
+        "title": "File upload"
+    },
+    {
+        "href": "/logout",
+        "title": "Logout"
+    }
+]

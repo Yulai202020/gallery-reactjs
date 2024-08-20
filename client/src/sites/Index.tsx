@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 import Cookies from 'js-cookie';
 import React from 'react';
+import Navigate from './Navigate';
 
-import 'bootstrap/dist/css/bootstrap.css';
-import '../style.css';
+import useTitle from './useTitle';
 
 function Index() {
+  useTitle("Home");
+
   const [BackendData, setBackendData] = useState<any[]>([]);
   const [Width, setWidth] = useState(0);
   const navigate = useNavigate();
@@ -93,6 +95,7 @@ function Index() {
 
   return (
     <>
+      <Navigate />
       <div className="gallery">
         {BackendData.map((item, index) => (
           <div className="gallery-item">
@@ -104,14 +107,6 @@ function Index() {
             <button className="btn btn-primary" onClick={sendDelete} id={String(item.id)}>delete</button>
           </div>  
         ))}
-      </div>
-
-      <div className="mb-3">
-        <a href="/upload">Upload</a>
-      </div>
-
-      <div className="mb-3">
-        <a href="/logout">Logout</a>
       </div>
     </>
   );
