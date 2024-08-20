@@ -88,6 +88,9 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
         return res.status(500).json({ message: "Error saving metadata." });
     }
 
+    console.log("Uploaded image:");
+    console.log(response);
+
     const uploadPath = path.join(__dirname, photos_folder, username, String(response.id));
     fs.mkdirSync(uploadPath, { recursive: true });
 
@@ -122,8 +125,12 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     try {
         await prisma.images.update({ where: { id: response.id }, data: { state: true } });
     } catch {
-
+        return;
     }
+
+    console.log("Converted image correctly.");
+
+    return;
 });
 
 app.get("/api/image/:id/:type", async (req, res) => {
@@ -145,7 +152,7 @@ app.get("/api/image/:id/:type", async (req, res) => {
     }
 
     var type1;
-    console.log(type)
+
     if (type == "100") {
         type1 = "100w.webp";
     } else if (type == "200") {
