@@ -17,4 +17,5 @@ model Images {
   alt String
   subject String
   username String
+  state Boolean
 }

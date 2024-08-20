@@ -82,7 +82,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 
     let response;
     try {
-        response = await prisma.images.create({ data: { alt: alt, subject: subject, username: username } });
+        response = await prisma.images.create({ data: { alt: alt, subject: subject, username: username, state: false } });
     } catch (err) {
         console.error("Error saving metadata to the database:", err);
         return res.status(500).json({ message: "Error saving metadata." });
@@ -117,6 +117,12 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
         await sharp(req.file.buffer).resize({ width: 100 }).avif({ quality: 80 }).toFile(file100pxPath + ".avif");
     } catch (err) {
         console.error("Error converting the image to WebP:", err);
+    }
+
+    try {
+        await prisma.images.update({ where: { id: response.id }, data: { state: true } });
+    } catch {
+
     }
 });
 
@@ -174,7 +180,7 @@ app.get("/api/images", async (req, res) => {
         return res.status(403).json({ message: "Token is expired" });
     }
 
-    const response = await prisma.images.findMany({ where: { username: username } })
+    const response = await prisma.images.findMany({ where: { username: username, state: true } })
     console.log("Sended images:")
     console.log(response);
 
