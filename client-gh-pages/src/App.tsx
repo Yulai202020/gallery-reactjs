@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Favicon from "react-favicon";
 
 import Home from "./sites/Home";
@@ -13,14 +13,14 @@ import './style.css';
 function App() {
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Navigate />
       <Favicon url="/logo.svg" />
       <Routes>
-        <Route index element={<Home />}/>
-        <Route path="*" element={<PageNotFound />}/>
+        <Route index element={<Home />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

@@ -1,10 +1,3 @@
-.figure-caption {
-    text-align: center;
-    font-size: 0.9rem;
-    color: #333;
-    margin-top: 5px;
-}
-
 .fullscreen-overlay {
     position: fixed;
     top: 0;
@@ -56,4 +49,28 @@
 
 .fullscreen-content a:hover {
     color: #ddd;
+}
+
+.navigation-buttons {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.navigation-buttons button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.navigation-buttons button:hover {
+    background-color: #ddd;
 }
