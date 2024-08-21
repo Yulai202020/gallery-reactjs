@@ -4,6 +4,8 @@ import Favicon from "react-favicon";
 import Home from "./sites/Home";
 
 import 'bootstrap/dist/css/bootstrap.css';
+
+import "./gallery.css";
 import './style.css';
 
 function App() {

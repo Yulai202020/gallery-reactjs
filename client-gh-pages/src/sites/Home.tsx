@@ -1,6 +1,6 @@
 import BackendData from "./config.json";
 import { useState } from "react";
-import "./test.css";
+import "./fullscreen.css";
 
 function Home() {
     const [isFullscreen, setIsFullscreen] = useState(false);
