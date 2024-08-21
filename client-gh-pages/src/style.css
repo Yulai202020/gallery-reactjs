@@ -13,7 +13,7 @@ body {
 }
 
 .gallery-item {
-  width: 100%;
+  width: 20%;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
@@ -21,7 +21,7 @@ body {
 
 .gallery-item img {
   border-radius: 10px;
-  width: 20%;
+  width: 100%;
   height: auto;
   cursor: pointer;
   transition: transform 0.3s;
@@ -31,39 +31,49 @@ body {
   transform: scale(1.1);
 }
 
-.lightbox {
-  display: none;
+.fullscreen-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.9);
+  padding: 20px;
 }
 
-.lightbox-content {
-  margin: auto;
-  display: block;
-  width: 80%;
-  max-width: 700px;
+.fullscreen-image {
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 10px;
 }
 
-.close {
+.close-button {
   position: absolute;
   top: 20px;
-  right: 35px;
+  right: 20px;
   color: white;
   font-size: 40px;
   font-weight: bold;
-  transition: 0.3s;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.close:hover,
-.close:focus {
+.close-button:hover {
   color: #bbb;
-  text-decoration: none;
-  cursor: pointer;
+}
+
+.image-description {
+  color: #fff;
+  font-size: 18px; /* Slightly larger text for better readability */
+  margin: 10px 0;
+  text-align: center;
+}
+
+.mb-3 {
+  margin-bottom: 15px;
 }
