@@ -1,15 +1,17 @@
 import BackendData from "./config.json";
 import { useState } from "react";
+import useTitle from "./useTitle";
 import "./fullscreen.css";
 
 function Home() {
+    useTitle("Home");
+
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [Index, setIndex] = useState(-1);
 
-
     const handleClick = (event: React.MouseEvent<HTMLImageElement>, index: number) => {
       event.stopPropagation();
-      setIndex(Number(index));
+      setIndex(index);
       setIsFullscreen(true);
     };
 
@@ -17,6 +19,7 @@ function Home() {
       setIsFullscreen(false);
       setIndex(-1);
     };
+
     return (
         <div className="gallery">
           {BackendData.map((item, index) => (
@@ -37,7 +40,7 @@ function Home() {
 
               <div className="fullscreen-content">
                 <p>{BackendData[Index].alt}</p>
-                <a href="#" download>Download Image</a>
+                <a href={`/api/image/${BackendData[Index].id}/download`}>Download Image</a>
               </div>
             </div>
           )}
