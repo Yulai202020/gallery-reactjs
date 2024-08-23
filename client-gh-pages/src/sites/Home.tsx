@@ -82,9 +82,9 @@ function Home() {
                 <a href={`/api/image/${BackendData[index].id}/download`}>Download Image</a>
               </div>
 
-              <div className="navigation-buttons">
-                <button onClick={handlePrevious}>&lt;</button>
-                <button onClick={handleNext}>&gt;</button>
+              <div>
+                <button className="button button-left" onClick={handlePrevious}>&lt;</button>
+                <button className="button button-right" onClick={handleNext}>&gt;</button>
               </div>
             </div>
           )}

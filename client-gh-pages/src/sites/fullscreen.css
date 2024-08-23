@@ -14,10 +14,11 @@
 }
 
 .fullscreen-image {
-    max-width: 90%;
-    max-height: 80%;
+    max-width: 70%;
+    min-width: 40%;
+    max-height: 70%;
+    min-height: 40%;
     object-fit: contain;
-    border: 2px solid #fff;
 }
 
 .close-button {
@@ -49,28 +50,37 @@
 
 .fullscreen-content a:hover {
     color: #ddd;
+    transition: 3s;
 }
 
-.navigation-buttons {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-.navigation-buttons button {
-    background-color: #fff;
-    border: 1px solid #ccc;
+.button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px 20px; /* here is button size */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
     border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1.5rem;
     cursor: pointer;
-    margin: 0 10px;
+    transition: color 0.3s, background-color 0.3s;
+    box-sizing: border-box;
+    font-size: 1rem;
+    text-align: center;
+    white-space: nowrap;
 }
 
-.navigation-buttons button:hover {
-    background-color: #ddd;
+.button-left {
+    left: 0;
+    margin-left: 5%;
+}
+
+.button-right {
+    right: 0;
+    margin-right: 5%;
+}
+
+.button:hover {
+    color: #ddd;
+    background-color: #0056b3;
 }
