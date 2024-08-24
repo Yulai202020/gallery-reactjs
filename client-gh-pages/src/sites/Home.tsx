@@ -15,7 +15,7 @@ function Home() {
       setIsFullscreen(true);
     };
 
-    const handleClose = () => {
+    const handleClose = () => {1
       setIsFullscreen(false);
       setIndex(-1);
     };
