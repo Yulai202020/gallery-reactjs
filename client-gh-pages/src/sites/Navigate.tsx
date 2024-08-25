@@ -1,4 +1,8 @@
-function Navigate() {
+interface Probs {
+    basepath: string,
+}
+
+function Navigate({ basepath } : Probs) {
     return (
         <>
         </>
