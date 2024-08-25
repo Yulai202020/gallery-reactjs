@@ -1,13 +1,15 @@
 import "./navigate-style.css";
-import categories from "./categories.json";
+import categories from "./categories.json"
 import navigateData from "./navigate.json";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-interface Props {
-    basepath: string;
+interface Probs {
+    basepath: string,
 }
 
-function Navigate({ basepath }: Props) {
+function Navigate({ basepath } : Probs) {
+    console.log(basepath);
+
     const location = useLocation();
     const currentPath = location.pathname;
 
@@ -15,19 +17,20 @@ function Navigate({ basepath }: Props) {
         <nav>
             <ul>
                 {navigateData.map((item) => (
-                    <li key={item.href}>
-                        <Link className={currentPath === item.href ? 'active' : ''} to={`${basepath}/#${item.href.slice(1)}`}> {item.title} </Link>
+                    <li>
+                        <a className={currentPath === item.href ? 'active' : ''} href={basepath +"/#" + item.href.slice(1)}>{item.title}</a>
                     </li>
                 ))}
 
                 {categories.map((item) => (
-                    <li key={item}>
-                        <Link className={currentPath === `/${item}` ? 'active' : ''}  to={`${basepath}/#${item}`}> {item} </Link>
+                    <li>
+                        <a className={currentPath.slice(1) === item ? 'active' : ''} href={basepath +"/#" + item}>{item}</a>
                     </li>
                 ))}
             </ul>
         </nav>
     );
+
 }
 
 export default Navigate;
