@@ -1,7 +1,9 @@
 import React, { useState, useEffect, TouchEvent } from "react";
-import BackendData from "./config.json";
+import config from "./config.json";
+import list from "./list.json"
 import useTitle from "./useTitle";
 import "./fullscreen.css";
+import { useParams } from "react-router-dom";
 
 // needed interface
 interface ImageData {
@@ -14,19 +16,34 @@ interface BackendDataType {
   [key: string]: ImageData[];
 }
 
-interface Probs {
-  folder_name: string
+function filterConfigByKeys(keys: string[], config: BackendDataType): ImageData[] {
+    let resultList: ImageData[] = [];
+
+    keys.forEach(key => {
+      if (key in config) {
+        resultList = resultList.concat(config[key]);
+      }
+    });
+
+    return resultList;
 }
 
-function Home({folder_name} : Probs) {
+function Home() {
+  const { folder: folderName } = useParams<{ folder?: string }>();
+  const [images, setImages] = useState<ImageData[]>([]);
+  
   // change title
 
   useTitle("Home");
 
-  // get folder by id
+  useEffect(() => {
+    if (folderName === undefined) {
+      setImages(filterConfigByKeys(list, config));
+    } else {
+      setImages((config as BackendDataType)[folderName] || []);
+    }
+  }, [folderName]);
 
-  const images = (BackendData as BackendDataType)[folder_name] || [];
-  
   // vars
 
   const [startX, setStartX] = useState<number | null>(null);

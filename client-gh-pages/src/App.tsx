@@ -3,7 +3,7 @@ import Favicon from "react-favicon";
 
 import Navigate from "./sites/Navigate";
 import PageNotFound from "./sites/PageNotFound";
-import Index from "./sites/Index";
+import Home from "./sites/Home";
 
 import config from "./config.json";
 
@@ -21,7 +21,8 @@ function App() {
       <Favicon url={`${config.basepath}/logo.svg`} />
 
       <Routes> {/* dont needs basepath */}
-        <Route index element={<Index />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/:folder" element={<Home />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </HashRouter>

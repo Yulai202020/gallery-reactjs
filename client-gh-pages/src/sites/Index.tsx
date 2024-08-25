@@ -21,7 +21,7 @@ function Index() {
             </div>
             <Collapse in={openItem === i}>
               <div>
-                <Home folder_name={item} />
+                <Home />
               </div>
             </Collapse>
           </>
