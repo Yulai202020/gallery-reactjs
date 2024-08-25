@@ -15,12 +15,10 @@ interface ImageData {
 
 function Home() {
   const { folder: folderName } = useParams<{ folder?: string }>();
-  const [images, setImages] = useState([{}]);
+  const [images, setImages] = useState<ImageData[]>([]);
 
   useEffect(() => {
-    const filteredImages = folderName 
-      ? config.filter(item => item.category === folderName)
-      : config;
+    const filteredImages = folderName ? config.filter(item => item.category === folderName) : config as ImageData[];
 
     setImages(filteredImages);
   }, [folderName]);
