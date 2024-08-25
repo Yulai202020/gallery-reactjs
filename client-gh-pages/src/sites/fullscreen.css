@@ -84,3 +84,18 @@
     color: #ddd;
     background-color: #0056b3;
 }
+
+@media (max-width: 767px) and (orientation: portrait) {
+    .button-left,
+    .button-right {
+        display: none;
+    }
+
+    .fullscreen-image {
+        max-width: 90%;
+        min-width: 40%;
+        max-height: 90%;
+        min-height: 40%;
+        object-fit: contain;
+    }
+}

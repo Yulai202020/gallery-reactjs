@@ -1,6 +1,5 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Favicon from "react-favicon";
-
 import Home from "./sites/Home";
 import Navigate from "./sites/Navigate";
 import PageNotFound from "./sites/PageNotFound";
