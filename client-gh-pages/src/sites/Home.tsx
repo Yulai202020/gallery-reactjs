@@ -1,9 +1,11 @@
 import React, { useState, useEffect, TouchEvent } from "react";
-import config from "./config.json";
-import list from "./list.json"
-import useTitle from "./useTitle";
-import "./fullscreen.css";
 import { useParams } from "react-router-dom";
+
+import config from "./config.json";
+import categories from "./categories.json";
+
+import "./fullscreen.css";
+import useTitle from "./useTitle";
 
 // needed interface
 interface ImageData {
@@ -38,7 +40,7 @@ function Home() {
 
   useEffect(() => {
     if (folderName === undefined) {
-      setImages(filterConfigByKeys(list, config));
+      setImages(filterConfigByKeys(categories, config));
     } else {
       setImages((config as BackendDataType)[folderName] || []);
     }

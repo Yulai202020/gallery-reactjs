@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Collapse } from 'react-bootstrap';
 
+import categories from "./categories.json";
+
 import Home from './Home';
-import config from "./list.json";
 
 function Index() {
   const [openItem, setOpenItem] = useState<Number | null>(null);
@@ -14,7 +15,7 @@ function Index() {
   return (
     <div className="container mt-4">
       <div className="list-group">
-        {config.map((item, i) => (
+        {categories.map((item, i) => (
           <>
             <div role="button" className="list-group-item list-group-item-action" onClick={() => toggleCollapse(i)} tabIndex={i}>
               {item}

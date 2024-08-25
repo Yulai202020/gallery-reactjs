@@ -1,5 +1,5 @@
 import "./navigate-style.css";
-import categories from "./list.json"
+import categories from "./categories.json"
 import navigateData from "./navigate.json";
 import { useLocation } from "react-router-dom";
 
