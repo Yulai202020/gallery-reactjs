@@ -2,11 +2,9 @@ import React, { useState, useEffect, TouchEvent } from "react";
 import { useParams } from "react-router-dom";
 
 import config from "./config.json";
-
 import "./fullscreen.css";
 import useTitle from "./useTitle";
 
-// needed interface
 interface ImageData {
   id: number;
   href: string;
@@ -16,25 +14,18 @@ interface ImageData {
 function Home() {
   const { folder: folderName } = useParams<{ folder?: string }>();
   const [images, setImages] = useState<ImageData[]>([]);
-
-  useEffect(() => {
-    const filteredImages = folderName ? config.filter(item => item.category === folderName) : config as ImageData[];
-
-    setImages(filteredImages);
-  }, [folderName]);
-  
-  // change title
-
-  useTitle("Home");
-
-  // vars
-
   const [startX, setStartX] = useState<number | null>(null);
   const [startY, setStartY] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [index, setIndex] = useState(-1);
+  const [index, setIndex] = useState<number | null>(null);
 
-  // handle tap
+  useEffect(() => {
+    const filteredImages = folderName ? config.filter(item => item.category === folderName) : config as ImageData[];
+    setImages(filteredImages);
+    setIndex(null); // Reset index when images change
+  }, [folderName]);
+
+  useTitle("Home");
 
   const handleClick = (event: React.MouseEvent<HTMLImageElement>, index: number) => {
     event.stopPropagation();
@@ -44,28 +35,28 @@ function Home() {
 
   const handleClose = () => {
     setIsFullscreen(false);
-    setIndex(-1);
+    setIndex(null);
   };
 
-  // handle change
-
   const handleNext = () => {
-    setIndex((prevIndex) => (prevIndex + 1) % images.length);
+    if (images.length > 0 && index !== null) {
+      setIndex((prevIndex) => (prevIndex! + 1) % images.length);
+    }
   };
 
   const handlePrevious = () => {
-    setIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    if (images.length > 0 && index !== null) {
+      setIndex((prevIndex) => (prevIndex! - 1 + images.length) % images.length);
+    }
   };
 
   const handleFirst = () => {
-    setIndex(0);
+    if (images.length > 0) setIndex(0);
   };
 
   const handleLatest = () => {
-    setIndex(images.length - 1);
+    if (images.length > 0) setIndex(images.length - 1);
   };
-
-  // handle scroll
 
   const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
@@ -111,7 +102,7 @@ function Home() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [images, index, isFullscreen]);
 
   useEffect(() => {
     document.body.style.overflow = isFullscreen ? 'hidden' : 'auto';
@@ -123,7 +114,7 @@ function Home() {
   return (
     <div className="gallery">
       {images.map((item, i) => (
-        <div className="gallery-item" key={i}>
+        <div className="gallery-item" key={item.id}>
           <img
             src={item.href}
             alt={item.alt}
@@ -134,7 +125,7 @@ function Home() {
         </div>
       ))}
 
-      {isFullscreen && index >= 0 && index < images.length && (
+      {isFullscreen && index !== null && (
         <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} className="fullscreen-overlay">
           <span className="close-button" onClick={handleClose}>&times;</span>
           <img src={images[index].href} alt={images[index].alt} className="fullscreen-image" />
