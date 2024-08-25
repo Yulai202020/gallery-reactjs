@@ -2,7 +2,6 @@ import React, { useState, useEffect, TouchEvent } from "react";
 import { useParams } from "react-router-dom";
 
 import config from "./config.json";
-import categories from "./categories.json";
 
 import "./fullscreen.css";
 import useTitle from "./useTitle";
@@ -14,37 +13,21 @@ interface ImageData {
   alt: string;
 }
 
-interface BackendDataType {
-  [key: string]: ImageData[];
-}
-
-function filterConfigByKeys(keys: string[], config: BackendDataType): ImageData[] {
-    let resultList: ImageData[] = [];
-
-    keys.forEach(key => {
-      if (key in config) {
-        resultList = resultList.concat(config[key]);
-      }
-    });
-
-    return resultList;
-}
-
 function Home() {
   const { folder: folderName } = useParams<{ folder?: string }>();
-  const [images, setImages] = useState<ImageData[]>([]);
+  const [images, setImages] = useState([{}]);
+
+  useEffect(() => {
+    const filteredImages = folderName 
+      ? config.filter(item => item.category === folderName)
+      : config;
+
+    setImages(filteredImages);
+  }, [folderName]);
   
   // change title
 
   useTitle("Home");
-
-  useEffect(() => {
-    if (folderName === undefined) {
-      setImages(filterConfigByKeys(categories, config));
-    } else {
-      setImages((config as BackendDataType)[folderName] || []);
-    }
-  }, [folderName]);
 
   // vars
 
