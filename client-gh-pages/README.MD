@@ -4,7 +4,9 @@ Steps to make github pages project with react vite
 # Steps
  - 1 - make react app
  ```bash
- npm create vite@latest
+ npm create vite@latest # and do what said vite
+ # do what said vite
+ npm install gh-pages # needed
  ```
 
  - 1.2 - add to git
