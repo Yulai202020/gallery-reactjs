@@ -3,12 +3,38 @@ import BackendData from "./config.json";
 import useTitle from "./useTitle";
 import "./fullscreen.css";
 
-function Home() {
+// needed interface
+interface ImageData {
+  id: number;
+  href: string;
+  alt: string;
+}
+
+interface BackendDataType {
+  [key: string]: ImageData[];
+}
+
+interface Probs {
+  folder_name: string
+}
+
+function Home({folder_name} : Probs) {
+  // change title
+
   useTitle("Home");
+
+  // get folder by id
+
+  const images = (BackendData as BackendDataType)[folder_name] || [];
+  
+  // vars
+
   const [startX, setStartX] = useState<number | null>(null);
   const [startY, setStartY] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [index, setIndex] = useState(-1);
+
+  // handle tap
 
   const handleClick = (event: React.MouseEvent<HTMLImageElement>, index: number) => {
     event.stopPropagation();
@@ -21,12 +47,14 @@ function Home() {
     setIndex(-1);
   };
 
+  // handle change
+
   const handleNext = () => {
-    setIndex((prevIndex) => (prevIndex + 1) % BackendData.length);
+    setIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
   const handlePrevious = () => {
-    setIndex((prevIndex) => (prevIndex - 1 + BackendData.length) % BackendData.length);
+    setIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
   };
 
   const handleFirst = () => {
@@ -34,8 +62,10 @@ function Home() {
   };
 
   const handleLatest = () => {
-    setIndex(BackendData.length - 1);
+    setIndex(images.length - 1);
   };
+
+  // handle scroll
 
   const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
@@ -92,7 +122,7 @@ function Home() {
 
   return (
     <div className="gallery">
-      {BackendData.map((item, i) => (
+      {images.map((item, i) => (
         <div className="gallery-item" key={i}>
           <img
             src={item.href}
@@ -104,13 +134,13 @@ function Home() {
         </div>
       ))}
 
-      {isFullscreen && index >= 0 && index < BackendData.length && (
+      {isFullscreen && index >= 0 && index < images.length && (
         <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} className="fullscreen-overlay">
           <span className="close-button" onClick={handleClose}>&times;</span>
-          <img src={BackendData[index].href} alt={BackendData[index].alt} className="fullscreen-image" />
+          <img src={images[index].href} alt={images[index].alt} className="fullscreen-image" />
           <div className="fullscreen-content">
-            <p>{BackendData[index].alt}</p>
-            <a href={`/api/image/${BackendData[index].id}/download`}>Download Image</a>
+            <p>{images[index].alt}</p>
+            <a href={`/api/image/${images[index].id}/download`}>Download Image</a>
           </div>
           <div>
             <button className="button button-left" onClick={handlePrevious}>&lt;</button>

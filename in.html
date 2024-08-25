@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap Collapsible List Group</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+  <div class="list-group">
+    <a class="list-group-item list-group-item-action" data-toggle="collapse">
+      Item 1
+    </a>
+    <div id="item1" class="collapse">
+      <ul class="list-group">
+        <li class="list-group-item">Sub-item 1.1</li>
+        <li class="list-group-item">Sub-item 1.2</li>
+      </ul>
+    </div>
+    <a class="list-group-item list-group-item-action" data-toggle="collapse">
+      Item 2
+    </a>
+    <div id="item2" class="collapse">
+      <ul class="list-group">
+        <li class="list-group-item">Sub-item 2.1</li>
+        <li class="list-group-item">Sub-item 2.2</li>
+      </ul>
+    </div>
+    <!-- Add more items as needed -->
+  </div>
+</div>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
