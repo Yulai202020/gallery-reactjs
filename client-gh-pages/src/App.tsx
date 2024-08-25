@@ -18,7 +18,7 @@ function App() {
     <HashRouter>
       {/* needs basepath */}
       <Navigate basepath={config.basepath} />
-      <Favicon url={`${config}/logo.svg`} />
+      <Favicon url={`${config.basepath}/logo.svg`} />
 
       <Routes> {/* dont needs basepath */}
         <Route index element={<Home />} />
