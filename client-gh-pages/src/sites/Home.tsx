@@ -22,7 +22,7 @@ function Home() {
   useEffect(() => {
     const filteredImages = folderName ? config.filter(item => item.category === folderName) : config as ImageData[];
     setImages(filteredImages);
-    setIndex(null); // Reset index when images change
+    setIndex(null);
   }, [folderName]);
 
   useTitle("Home");
@@ -131,7 +131,8 @@ function Home() {
           <img src={images[index].href} alt={images[index].alt} className="fullscreen-image" />
           <div className="fullscreen-content">
             <p>{images[index].alt}</p>
-            <a href={`/api/image/${images[index].id}/download`}>Download Image</a>
+            {/* <a href={`/api/image/${images[index].id}/download`}>Download Image</a> */}
+            <a href={images[index].href} target="_blank">Download Image</a>
           </div>
           <div>
             <button className="button button-left" onClick={handlePrevious}>&lt;</button>
