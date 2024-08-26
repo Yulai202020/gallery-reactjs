@@ -8,8 +8,6 @@ interface Probs {
 }
 
 function Navigate({ basepath } : Probs) {
-    console.log(basepath);
-
     const location = useLocation();
     const currentPath = decodeURIComponent(location.pathname);
 
