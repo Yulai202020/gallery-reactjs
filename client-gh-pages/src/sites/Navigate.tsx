@@ -11,7 +11,7 @@ function Navigate({ basepath } : Probs) {
     console.log(basepath);
 
     const location = useLocation();
-    const currentPath = location.pathname;
+    const currentPath = decodeURIComponent(location.pathname);
 
     return (
         <nav>
