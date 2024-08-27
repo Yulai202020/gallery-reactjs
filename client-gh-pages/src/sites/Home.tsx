@@ -132,7 +132,7 @@ function Home() {
           <div className="fullscreen-content">
             <p>{images[index].alt}</p>
             {/* <a href={`/api/image/${images[index].id}/download`}>Download Image</a> */}
-            <a href={images[index].href} target="_blank">Download Image</a>
+            <a href={images[index].href} target="_blank">Open Image</a>
           </div>
           <div>
             <button className="button button-left" onClick={handlePrevious}>&lt;</button>
