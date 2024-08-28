@@ -5,7 +5,7 @@ import Home from "./sites/Home";
 import PageNotFound from "./sites/PageNotFound";
 import Navigate from "./sites/Navigate";
 
-import config from "./config.json";
+import { basepath } from "./config.json";
 
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -17,8 +17,8 @@ function App() {
   return (
     <HashRouter>
       {/* needs basepath */}
-      <Navigate basepath={config.basepath} />
-      <Favicon url={`${config.basepath}/logo.svg`} />
+      <Navigate basepath={basepath} />
+      <Favicon url={`${basepath}/logo.svg`} />
 
       <Routes> {/* dont needs basepath */}
         <Route path="/" element={<Home />} />

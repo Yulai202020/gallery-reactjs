@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import config from "./config.json";
 import "./fullscreen.css";
 import useTitle from "./useTitle";
+import { basepath } from "../config.json"
 
 interface ImageData {
   id: number;
-  href: string;
   alt: string;
 }
 
@@ -116,7 +116,7 @@ function Home() {
       {images.map((item, i) => (
         <div className="gallery-item" key={item.id}>
           <img
-            src={item.href}
+            src={`${basepath}/photos/${item.id}/original.avif`}
             alt={item.alt}
             id={i.toString()}
             onClick={(event) => handleClick(event, i)}
@@ -128,11 +128,11 @@ function Home() {
       {isFullscreen && index !== null && (
         <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} className="fullscreen-overlay">
           <span className="close-button" onClick={handleClose}>&times;</span>
-          <img src={images[index].href} alt={images[index].alt} className="fullscreen-image" />
+          <img src={`${basepath}/photos/${images[index].id}/original.avif`} alt={images[index].alt} className="fullscreen-image" />
           <div className="fullscreen-content">
             <p>{images[index].alt}</p>
             {/* <a href={`/api/image/${images[index].id}/download`}>Download Image</a> */}
-            <a href={images[index].href} target="_blank">Open Image</a>
+            <a href={`${basepath}/photos/${images[index].id}/original.avif`} target="_blank">Open Image</a>
           </div>
           <div>
             <button className="button button-left" onClick={handlePrevious}>&lt;</button>
