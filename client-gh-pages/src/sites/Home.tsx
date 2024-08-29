@@ -1,10 +1,9 @@
-import React, { useState, useEffect, TouchEvent } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-
 import config from "./config.json";
 import "./fullscreen.css";
 import useTitle from "./useTitle";
-import { basepath } from "../config.json"
+import { basepath } from "../config.json";
 
 interface ImageData {
   id: number;
@@ -13,11 +12,15 @@ interface ImageData {
 
 function Home() {
   const { folder: folderName } = useParams<{ folder?: string }>();
-  const [images, setImages] = useState<ImageData[]>([]);
+
   const [startX, setStartX] = useState<number | null>(null);
   const [startY, setStartY] = useState<number | null>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [images, setImages] = useState<ImageData[]>([]);
   const [index, setIndex] = useState<number | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [orientation, setOrientation] = useState(window.innerHeight > window.innerWidth ? 'portrait' : 'landscape');
+  orientation;
+  const [sizes, setSizes] = useState({ onHome: "200w.avif", onFullscreen: "800w.avif" });
 
   useEffect(() => {
     const filteredImages = folderName ? config.filter(item => item.category === folderName) : config as ImageData[];
@@ -27,11 +30,11 @@ function Home() {
 
   useTitle("Home");
 
-  const handleClick = (event: React.MouseEvent<HTMLImageElement>, index: number) => {
+  const handleClick = useCallback((event: React.MouseEvent<HTMLImageElement>, index: number) => {
     event.stopPropagation();
     setIndex(index);
     setIsFullscreen(true);
-  };
+  }, []);
 
   const handleClose = () => {
     setIsFullscreen(false);
@@ -58,13 +61,13 @@ function Home() {
     if (images.length > 0) setIndex(images.length - 1);
   };
 
-  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
     setStartX(touch.clientX);
     setStartY(touch.clientY);
   };
 
-  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (startX === null || startY === null) return;
 
     const touch = e.touches[0];
@@ -81,6 +84,38 @@ function Home() {
     setStartX(null);
     setStartY(null);
   };
+
+  const handleResize = useCallback(() => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const newOrientation = height > width ? 'portrait' : 'landscape';
+
+    setOrientation(newOrientation);
+
+    if (width < 512 || height < 512) {
+      console.log("phone")
+      setSizes({ onHome: "100w.avif", onFullscreen: "400w.avif" });
+    } else {
+      console.log("pc")
+      setSizes({ onHome: "200w.avif", onFullscreen: "800w.avif" });
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [handleResize]);
+
+  useEffect(() => {
+    document.body.style.overflow = isFullscreen ? 'hidden' : 'auto';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isFullscreen]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -102,21 +137,14 @@ function Home() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [images, index, isFullscreen]);
-
-  useEffect(() => {
-    document.body.style.overflow = isFullscreen ? 'hidden' : 'auto';
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, [isFullscreen]);
+  }, [images, index, isFullscreen, handlePrevious, handleNext, handleFirst, handleLatest, handleClose]);
 
   return (
     <div className="gallery">
       {images.map((item, i) => (
         <div className="gallery-item" key={item.id}>
           <img
-            src={`${basepath}/photos/${item.id}/original.avif`}
+            src={`${basepath}/photos/${item.id}/${sizes.onHome}`}
             alt={item.alt}
             id={i.toString()}
             onClick={(event) => handleClick(event, i)}
@@ -128,11 +156,10 @@ function Home() {
       {isFullscreen && index !== null && (
         <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} className="fullscreen-overlay">
           <span className="close-button" onClick={handleClose}>&times;</span>
-          <img src={`${basepath}/photos/${images[index].id}/original.avif`} alt={images[index].alt} className="fullscreen-image" />
+          <img src={`${basepath}/photos/${images[index].id}/${sizes.onFullscreen}`} alt={images[index].alt} className="fullscreen-image" />
           <div className="fullscreen-content">
             <p>{images[index].alt}</p>
-            {/* <a href={`/api/image/${images[index].id}/download`}>Download Image</a> */}
-            <a href={`${basepath}/photos/${images[index].id}/original.avif`} target="_blank">Open Image</a>
+            <a href={`${basepath}/photos/${images[index].id}/original.avif`} target="_blank" rel="noopener noreferrer">Open Image</a>
           </div>
           <div>
             <button className="button button-left" onClick={handlePrevious}>&lt;</button>
